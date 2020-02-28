@@ -54,14 +54,14 @@ class Sudoku():
         if self.origin_board[i][j] != 0:
             self.__make_sudoku(k+1)
 
-        for m in range(1,self.SIZE+1):
-            m = 1 + (m + start_num)%9
+        for num in range(1,self.SIZE+1):
+            num = 1 + (num + start_num)%9
             d = (i//3)*3 + (j//3)
-            if self.row[i][m] == 0 and self.col[j][m] == 0 and self.diag[d][m] == 0:
-                self.row[i][m],self.col[j][m],self.diag[d][m] = 1,1,1
-                self.origin_board[i][j] = m
+            if self.row[i][num] == 0 and self.col[j][num] == 0 and self.diag[d][num] == 0:
+                self.row[i][num],self.col[j][num],self.diag[d][num] = 1,1,1
+                self.origin_board[i][j] = num
                 self.__make_sudoku(k+1)
-                self.row[i][m],self.col[j][m],self.diag[d][m] = 0,0,0
+                self.row[i][num],self.col[j][num],self.diag[d][num] = 0,0,0
                 self.origin_board[i][j] = 0
     
     def __sudoku_check(self, puzzle):
