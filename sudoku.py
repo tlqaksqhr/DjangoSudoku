@@ -4,11 +4,12 @@ import random
 class Sudoku():
 
     def __init__(self):
-        self.origin_board = [[0 for j in range(0,9)] for i in range(0,9)]
-        self.board = [[0 for j in range(0,9)] for i in range(0,9)]
-        self.row = [[0 for j in range(0,10)] for i in range(0,10)]
-        self.col = [[0 for j in range(0,10)] for i in range(0,10)]
-        self.diag = [[0 for j in range(0,10)] for i in range(0,10)]
+        self.SIZE = 9
+        self.origin_board = [[0 for j in range(0,self.SIZE)] for i in range(0,self.SIZE)]
+        self.board = [[0 for j in range(0,self.SIZE)] for i in range(0,self.SIZE)]
+        self.row = [[0 for j in range(0,self.SIZE+1)] for i in range(0,self.SIZE+1)]
+        self.col = [[0 for j in range(0,self.SIZE+1)] for i in range(0,self.SIZE+1)]
+        self.diag = [[0 for j in range(0,self.SIZE+1)] for i in range(0,self.SIZE+1)]
         self.terminate_flag = False
 
         self.__board_init()
@@ -16,7 +17,7 @@ class Sudoku():
     def __board_init(self):
         seq_diag = [0,4,8]
         for offset in range(0,9,3):
-            seq = [i for i in range(1,10)]
+            seq = [i for i in range(1,self.SIZE+1)]
             random.shuffle(seq)
             for idx in range(0,9):
                 i,j = idx//3,idx%3
@@ -27,11 +28,11 @@ class Sudoku():
                 self.origin_board[offset+i][offset+j] = seq[idx]
 
     def __clean(self):
-        self.origin_board = [[0 for j in range(0,9)] for i in range(0,9)]
-        self.board = [[0 for j in range(0,9)] for i in range(0,9)]
-        self.row = [[0 for j in range(0,10)] for i in range(0,10)]
-        self.col = [[0 for j in range(0,10)] for i in range(0,10)]
-        self.diag = [[0 for j in range(0,10)] for i in range(0,10)]
+        self.origin_board = [[0 for j in range(0,self.SIZE)] for i in range(0,self.SIZE)]
+        self.board = [[0 for j in range(0,self.SIZE)] for i in range(0,self.SIZE)]
+        self.row = [[0 for j in range(0,self.SIZE+1)] for i in range(0,self.SIZE+1)]
+        self.col = [[0 for j in range(0,self.SIZE+1)] for i in range(0,self.SIZE+1)]
+        self.diag = [[0 for j in range(0,self.SIZE+1)] for i in range(0,self.SIZE+1)]
         self.terminate_flag = False
 
     def __make_sudoku(self, k):
@@ -39,20 +40,21 @@ class Sudoku():
         if self.terminate_flag == True:
             return True
 
-        if k > 80:
-            for i in range(0,9):
-                for j in range(0,9):
+        board_size = self.SIZE*self.SIZE
+        if k >= board_size :
+            for i in range(0,self.SIZE):
+                for j in range(0,self.SIZE):
                     self.board[i][j] = self.origin_board[i][j]
             self.terminate_flag = True
             return True
 
-        i,j = k//9,k%9
-        start_num = random.randint(1,9)
+        i,j = k//self.SIZE,k%self.SIZE
+        start_num = random.randint(1,self.SIZE)
 
         if self.origin_board[i][j] != 0:
             self.__make_sudoku(k+1)
 
-        for m in range(1,10):
+        for m in range(1,self.SIZE+1):
             m = 1 + (m + start_num)%9
             d = (i//3)*3 + (j//3)
             if self.row[i][m] == 0 and self.col[j][m] == 0 and self.diag[d][m] == 0:
@@ -64,10 +66,14 @@ class Sudoku():
     
     def __sudoku_check(self, puzzle):
 
-        if puzzle != 9 or 
+        row_size = len(puzzle)
+        col_size = min([len(puzzle[i]) for i in range(0,row_size-1)])
 
-        for i in range(0,9):
-            for j in range(0,9):
+        if col_size != self.SIZE or row_size != self.SIZE:
+            return False
+
+        for i in range(0,self.SIZE):
+            for j in range(0,self.SIZE):
                 k = (i//3)*3 + (j//3)
                 num = puzzle[i][j]
                 print(i,j,k,num)
@@ -75,8 +81,8 @@ class Sudoku():
                 self.col[j][num]+=1
                 self.diag[k][num]+=1
         
-        for idx in range(0,9):
-            for num in range(1,10):
+        for idx in range(0,self.SIZE):
+            for num in range(1,self.SIZE+1):
                 if self.row[idx][num]!=1 or self.col[idx][num]!=1 or self.diag[idx][num]!=1:
                     return False
         
