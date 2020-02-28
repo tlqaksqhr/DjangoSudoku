@@ -76,7 +76,6 @@ class Sudoku():
             for j in range(0,self.SIZE):
                 k = (i//3)*3 + (j//3)
                 num = puzzle[i][j]
-                print(i,j,k,num)
                 self.row[i][num]+=1
                 self.col[j][num]+=1
                 self.diag[k][num]+=1
