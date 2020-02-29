@@ -15,8 +15,12 @@ def index(request):
     context = {}
     return render(request, 'sudoku/index.html',context)
 
-def get_ranking_list():
-    ranking_list = Question.objects.order_by('-pub_date')[:100]
+def ranking(request):
+    context = {}
+    return render(request, 'sudoku/ranking.html',context)
+
+def get_ranking_list(request):
+    ranking_list = Ranking.objects.order_by('-elapsed_time')[:100]
     return JsonResponse(ranking_list)
 
 def register_ranking(request):
