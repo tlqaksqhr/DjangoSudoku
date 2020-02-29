@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
     <style>
-        .grid-container {
+        .gridbox-container {
           display: grid;
           grid-template-columns: repeat(9, 3em);
         }
 
-        .grid-item {
+        .gridbox-item {
             background-color: rgba(255, 255, 255, 0.8);
             border: 1px solid rgba(0, 0, 0, 1);
             padding: 1em;
@@ -44,7 +52,6 @@
             flex: 1;
             width: 100%;
             flex-flow: row;
-            overflow: auto;
         }
 
         #dummy-flexbox {
@@ -61,7 +68,7 @@
             height: 100%;
         }
 
-        #sudoku-flexbox > .grid-container{
+        #sudoku-flexbox > .gridbox-container{
             justify-content: center;
         }
 
@@ -70,21 +77,31 @@
             flex: 2;
             flex-flow: column;
             align-items: center;
+            justify-content: space-between;
             height: 100%;
         }
-
-        #button-flexbox > a{
+       
+        .btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited, .btn-primary:focus {
             width: 8em;
-            height: 1.2em;
-            padding: 1em;
-            text-align: center;
-            color: white;
-            font-size: 1em;
-            font-weight: bold;
-            background-color: rgba(200, 177, 232, 1);;
+            background-color: rgba(200, 177, 232, 1);
+            border-color: rgba(200, 177, 232, 1);
+            margin-bottom: 2em;
         }
+
+        #main-flexbox {
+            margin-top: 1em;
+        }
+
+        #nav-bar-flexbox {
+            margin-bottom: 1em;
+        }
+
+        #fail-toast {
+            z-index: 1;
+            position: relative;
+        }
+
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
 
@@ -95,13 +112,25 @@
         <div id="content-flexbox">
             <div id="dummy-flexbox"></div>
             <div id="sudoku-flexbox">
-                <div class="grid-container">
+                <div class="gridbox-container">
                 </div>
             </div>
             <div id="button-flexbox">
-                <a id="submit-btn">SUBMIT</a>
+                <div>
+                    <a id="submit-btn" class="btn btn-primary" role="button">SUBMIT</a>
+                </div>
                 <div id="timer-box">
-                    <h3>00:00</h3>
+                    <h3>00:00:00</h3>
+                </div>
+            </div>
+        </div>
+        <div style="position: absolute; top: 40%;">
+            <div id="fail-toast" class="toast">
+                <div class="toast-header">
+                    <strong class="mr-auto text-danger">제출한 답안이 틀렸습니다!</strong>
+                </div>
+                <div class="toast-body text-danger">
+                    제출한 답안이 틀렸습니다!
                 </div>
             </div>
         </div>
@@ -109,17 +138,77 @@
 
     <script type="text/javascript">
         axios.get('/sudoku/make')
-            .then(function(response){
-                make_sudoku(response);
-            });
+            .then(make_sudoku);
+
+        let timer_textbox = document.querySelector("#timer-box > h3");
+        var elapsed_time = 0;
+
+        setInterval(function(){
+            elapsed_time+=1;
+
+            let seconds = parseInt(elapsed_time%60);
+            let minutes = parseInt((elapsed_time%3600)/60);
+            let hours = parseInt(elapsed_time/3600);
+
+            seconds = seconds.toString().padStart(2, '0');
+            minutes = minutes.toString().padStart(2, '0');
+            hours = hours.toString().padStart(2, '0');
+
+            timer_textbox.innerText = `${hours}:${minutes}:${seconds}`;
+
+        },1000);
         
+        let button_flexbox = document.querySelector("#submit-btn");
+        
+        axios.defaults.xsrfCookieName = 'csrftoken'
+        axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+        axios.defaults.headers.common['X-CSRF-TOKEN'] = getCookie("csrftoken");
+
+        button_flexbox.addEventListener("click",function(){
+            axios.post('/sudoku/check',
+                get_sudoku_data()
+            ).then(process_result);
+        });
+
+        function get_sudoku_data() {
+            let data = {
+                'elapsed_time':elapsed_time,
+            }
+
+            let grid_container = document.querySelector(".gridbox-container");
+            let board = [];
+
+            for(let i=0;i<9;i++){
+                for(let j=0;j<9;j++){
+                    let k = i*9 + j;
+                    let cell = grid_container.children[k];
+                    if(k%9==0){ 
+                        board.push([]);
+                    }
+                    board[i].push(Number(cell.innerText));
+                }
+            }
+
+            data['puzzle'] = board;
+            
+            return data;
+        }
+
+        function process_result(response) {
+            let status = response.data.status;
+            if(status == 'clear'){
+            }else{
+                $('.toast').toast('show');
+            }
+        }
+
         function make_sudoku(response){
             let board = response.data.board;
-            let grid_container = document.querySelector(".grid-container");
+            let grid_container = document.querySelector(".gridbox-container");
             for(let i=0;i<9;i++){
                 for(let j=0;j<9;j++){
                     let node = document.createElement("div");
-                    node.classList.add("grid-item")
+                    node.classList.add("gridbox-item")
 
                     if(i!=0 && i%3==2)
                         node.classList.add("cell-padding-bottom");
@@ -138,6 +227,22 @@
                     grid_container.appendChild(node);
                 }
             }
+        }
+
+        function getCookie(c_name)
+        {
+            if (document.cookie.length > 0)
+            {
+                c_start = document.cookie.indexOf(c_name + "=");
+                if (c_start != -1)
+                {
+                    c_start = c_start + c_name.length + 1;
+                    c_end = document.cookie.indexOf(";", c_start);
+                    if (c_end == -1) c_end = document.cookie.length;
+                    return unescape(document.cookie.substring(c_start,c_end));
+                }
+            }
+            return "";
         }
     </script>
 </body>
