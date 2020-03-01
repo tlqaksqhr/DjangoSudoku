@@ -25,12 +25,13 @@ SECRET_KEY = 'p#^e!kfwp1c**@jw4xj@+b-1_y07pg)m)wd5b4o2_rix(_&vo#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'sudoku.apps.SudokuConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
