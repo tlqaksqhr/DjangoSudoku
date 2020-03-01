@@ -255,9 +255,8 @@
                 let status = response.data;
                 if(status == 'success'){
                     location.href = "/ranking";
-                }else{
-                    $('#fail-toast-container').hide();
                 }
+                $('#success-toast-container').hide();
             });
         }
 
