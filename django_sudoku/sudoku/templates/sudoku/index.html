@@ -184,7 +184,7 @@
         $('#success-toast-container').hide();
         $('#fail-toast-container').hide();
 
-        setInterval(function(){
+        let timer = setInterval(function(){
             elapsed_time+=1;
 
             let seconds = parseInt(elapsed_time%60);
@@ -239,9 +239,12 @@
 
         function process_result(response) {
             let status = response.data.status;
+            clearInterval(timer);
+
             if(status == 'clear'){
                 $('#success-toast-container').show();
                 $('#success-toast').toast('show');
+                
             }else{
                 $('#fail-toast-container').show();
                 $('#fail-toast').toast('show');
