@@ -4,6 +4,8 @@ from django.views import templates
 from sudoku.models import Ranking
 from .api.sudokus import Sudoku
 
+from django.core import serializers
+
 from .models import Ranking
 
 import json
@@ -20,20 +22,26 @@ def ranking(request):
     return render(request, 'sudoku/ranking.html',context)
 
 def get_ranking_list(request):
-    ranking_list = Ranking.objects.order_by('-elapsed_time')[:100]
-    return JsonResponse(ranking_list)
+    ranking_list = Ranking.objects.order_by('elapsed_time')[:100]
+    ranking_data = serializers.serialize("json",ranking_list, fields=('name','elapsed_time'))
+    ranking_data = json.loads(ranking_data)
+    ranking_data = [{**item['fields'],**{"pk" : item['pk']}} for item in ranking_data]
+    ranking_data = {
+        "data" : ranking_data
+    }
+    return JsonResponse(ranking_data)
 
 def register_ranking(request):
 
+    # TODO : add check code random seed for security 
     if 'elapsed_time' not in request.session:
         return JsonResponse({'status' : 'failed'})
 
-    name = request.POST['name']
+    data = json.loads(request.body)
+    name = data['name']
     elapsed_time = request.session['elapsed_time']
 
-    ## TODO : save ranking info to database
-
-    datetime_args = elapsed_time/3600,(elapsed_time%3600)/60,elapsed_time%60
+    datetime_args = elapsed_time//3600,(elapsed_time%3600)//60,elapsed_time%60
     d = datetime.time(datetime_args[0], datetime_args[1], datetime_args[2]) 
 
     ranking = Ranking(name = name, elapsed_time = d)
@@ -48,6 +56,8 @@ def check_sudoku(request):
 
     puzzle = req_data['puzzle']
     elapsed_time = req_data['elapsed_time']
+
+    # TODO : add code save random seed for security 
 
     result = sudoku_api.sudoku_check(puzzle)
     data = {}
