@@ -38,3 +38,33 @@ def test_invalid_size_check():
         [1,9,7,8,3,4,5,6,2]
     ]
     assert sudoku.sudoku_check(invalid_board) == False
+
+def test_invalid_board_int():
+    sudoku = Sudoku()
+    invalid_board = 1
+    assert sudoku.sudoku_check(invalid_board) == False
+  
+def test_invalid_board_empty_list():
+    sudoku = Sudoku()
+    invalid_board = []
+    assert sudoku.sudoku_check(invalid_board) == False
+    
+def test_invalid_board_float():
+    sudoku = Sudoku()
+    invalid_board = 0.1
+    assert sudoku.sudoku_check(invalid_board) == False
+    
+def test_invalid_board_element_not_int():
+    sudoku = Sudoku()
+    invalid_board = [
+      [1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0],
+      [1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0],
+      [1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0],
+      [1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0],
+      [1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0],
+      [1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0],
+      [1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0],
+      [1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0],
+      [1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0]
+    ]
+    assert sudoku.sudoku_check(invalid_board) == False 
