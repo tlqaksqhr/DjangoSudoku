@@ -51,6 +51,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'django_sudoku.urls'
+CSRF_HEADER_NAME = 'X-CSRF-TOKEN'
+CSRF_COOKIE_NAME = 'csrftoken'
+CORS_ORIGIN_ALLOW_ALL = True
 
 TEMPLATES = [
     {
