@@ -75,13 +75,11 @@ class Sudoku():
         if col_size != self.SIZE or row_size != self.SIZE:
             return False
 
-
         for i in range(0,self.SIZE):
             for j in range(0,self.SIZE):
-                if type(board[i][j]) != type(1):
+                if type(self.board[i][j]) != type(1):
                     return False
         
-
         for i in range(0,self.SIZE):
             for j in range(0,self.SIZE):
                 k = (i//3)*3 + (j//3)
