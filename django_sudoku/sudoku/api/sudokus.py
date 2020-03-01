@@ -77,7 +77,7 @@ class Sudoku():
 
         for i in range(0,self.SIZE):
             for j in range(0,self.SIZE):
-                if type(self.board[i][j]) != type(1):
+                if type(puzzle[i][j]) != type(1):
                     return False
         
         for i in range(0,self.SIZE):
