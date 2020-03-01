@@ -169,6 +169,12 @@
     </div>
 
     <script type="text/javascript">
+
+        axios.defaults.withCredentials = true
+        axios.defaults.xsrfCookieName = 'csrftoken'
+        axios.defaults.xsrfHeaderName = "X-CSRF-TOKEN"
+        axios.defaults.headers.common['X-CSRF-TOKEN'] = getCookie("csrftoken");
+
         axios.get('/sudoku/make')
             .then(make_sudoku);
 
@@ -195,10 +201,6 @@
         
         let button_flexbox = document.querySelector("#submit-btn");
         let ranking_button = document.querySelector("#ranking_submit");
-        
-        axios.defaults.xsrfCookieName = 'csrftoken'
-        axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
-        axios.defaults.headers.common['X-CSRF-TOKEN'] = getCookie("csrftoken");
 
         button_flexbox.addEventListener("click",function(){
             axios.post('/sudoku/check',
