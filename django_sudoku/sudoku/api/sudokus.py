@@ -65,12 +65,22 @@ class Sudoku():
                 self.origin_board[i][j] = 0
     
     def __sudoku_check(self, puzzle):
+        
+        if type(puzzle) != type([]) or len(puzzle) == 0:
+            return False
 
         row_size = len(puzzle)
         col_size = min([len(puzzle[i]) for i in range(0,row_size-1)])
 
         if col_size != self.SIZE or row_size != self.SIZE:
             return False
+
+
+        for i in range(0,self.SIZE):
+            for j in range(0,self.SIZE):
+                if type(board[i][j]) != type(1):
+                    return False
+        
 
         for i in range(0,self.SIZE):
             for j in range(0,self.SIZE):
