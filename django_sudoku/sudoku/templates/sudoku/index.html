@@ -170,10 +170,9 @@
 
     <script type="text/javascript">
 
-        axios.defaults.withCredentials = true
         axios.defaults.xsrfCookieName = 'csrftoken'
-        axios.defaults.xsrfHeaderName = "X-CSRF-TOKEN"
-        axios.defaults.headers.common['X-CSRF-TOKEN'] = getCookie("csrftoken");
+        axios.defaults.xsrfHeaderName = "X-CSRFToken"
+        axios.defaults.headers.common['X-CSRFToken'] = getCookie("csrftoken");
 
         axios.get('/sudoku/make')
             .then(make_sudoku);
