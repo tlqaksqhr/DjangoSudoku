@@ -11,21 +11,17 @@ from .models import Ranking
 import json
 import datetime
 
-from django.views.decorators.csrf import csrf_exempt
 
-# Create your views here.
-
-@csrf_exempt
 def index(request):
     context = {}
     return render(request, 'sudoku/index.html',context)
 
-@csrf_exempt
+
 def ranking(request):
     context = {}
     return render(request, 'sudoku/ranking.html',context)
 
-@csrf_exempt
+
 def get_ranking_list(request):
     ranking_list = Ranking.objects.order_by('elapsed_time')[:100]
     ranking_data = serializers.serialize("json",ranking_list, fields=('name','elapsed_time'))
@@ -36,7 +32,7 @@ def get_ranking_list(request):
     }
     return JsonResponse(ranking_data)
 
-@csrf_exempt
+
 def register_ranking(request):
 
     # TODO : add check code random seed for security 
@@ -55,7 +51,7 @@ def register_ranking(request):
 
     return JsonResponse({'status' : 'success'})
 
-@csrf_exempt
+
 def check_sudoku(request):
     sudoku_api = Sudoku()
 
@@ -77,7 +73,7 @@ def check_sudoku(request):
 
     return JsonResponse(data)
 
-@csrf_exempt
+
 def make_sudoku(request):
 
     sudoku_api = Sudoku()
