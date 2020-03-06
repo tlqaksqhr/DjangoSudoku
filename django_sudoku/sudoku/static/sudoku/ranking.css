@@ -1,0 +1,33 @@
+
+        #main-flexbox{
+            display: flex;
+            flex-flow: column;
+            align-items: center;
+            height: 100%;
+        }
+
+        #content-flexbox{
+            display: flex;
+            width: 70%;
+            flex-flow: row;
+        }
+
+
+        #dummy-flexbox {
+            display: flex;
+            width: 15%;
+            flex-flow: column;
+        }
+
+        #button-flexbox{
+            display: flex;
+            width: 20%;
+            flex-flow: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        #main-flexbox {
+            margin-top: 1em;
+        }
